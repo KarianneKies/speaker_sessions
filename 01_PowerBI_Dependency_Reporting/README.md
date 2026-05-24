@@ -8,6 +8,7 @@
 
 | Event | Date |
 |---|---|
+| Make data smart Bergen, Norway — dataforeningen | 1 October 2025 |
 | Data Saturday #74 — Data Saturday Denmark | 31 January 2026 |
 | Data Saturday #78 — Data Community Austria Day | 23 January 2026 |
 
