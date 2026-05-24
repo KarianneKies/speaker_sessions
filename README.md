@@ -17,7 +17,7 @@
 
 | # | Session | Events | Materials |
 |---|---|---|---|
-| 01 | [Power BI Dependency Reporting](01_PowerBI_Dependency_Reporting/) | Data Saturday Denmark #74 · Jan 2026<br>Data Saturday Austria #78 · Jan 2026 | Notebook · Reports |
+| 01 | [Power BI Dependency Reporting](01_PowerBI_Dependency_Reporting/) | Make Data Smart Bergen, Norway  · Oct 2025<br>Data Saturday Denmark #74 · Jan 2026<br>Data Saturday Austria #78 · Jan 2026 | Notebook · Reports |
 
 ---
 
