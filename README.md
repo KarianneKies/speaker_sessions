@@ -6,7 +6,7 @@
 
 ## About the Speaker
 
-**Karianne Kies** is a Power BI and Microsoft Fabric specialist focused on data governance, lineage, and scalable reporting solutions.
+**Karianne Kies** -.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Karianne%20Kies-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/kariannekies)
 [![GitHub](https://img.shields.io/badge/GitHub-KarianneKies-181717?style=flat&logo=github)](https://github.com/KarianneKies)
