@@ -1,0 +1,70 @@
+// ============================================================================
+// Key Vault audit queries for Microsoft Fabric CMK
+// ============================================================================
+// Prerequisites:
+//   - Diagnostic settings configured on the Key Vault (script 01_keyvault_setup.sh)
+//   - AuditEvent logs flowing to a Log Analytics workspace
+//   - Table: KeyVaultLogs  (resource-specific) or AzureDiagnostics (classic)
+//
+// Run in: Azure Monitor Log Analytics workspace
+// ============================================================================
+
+
+// ----------------------------------------------------------------------------
+// Query 1: All wrap / unwrap operations — full audit trail
+// Use this to demonstrate that every Fabric access to your key is logged.
+// ----------------------------------------------------------------------------
+KeyVaultLogs
+| where TimeGenerated > ago(7d)
+| where OperationName in ("wrapkey", "unwrapkey")
+| project
+    TimeGenerated,
+    OperationName,
+    ResultType,
+    CallerIpAddress,
+    RequestId          = CorrelationId,
+    AppId              = identity_claim_appid_g,
+    ObjectId           = identity_claim_oid_g
+| order by TimeGenerated desc
+
+
+// ----------------------------------------------------------------------------
+// Query 2: Failed access attempts — Fabric cannot unwrap DEKs
+// Use as an Azure Monitor alert rule to detect key revocation or vault outage.
+// Recommended alert: fire when count > 0 over a 15-minute window.
+// ----------------------------------------------------------------------------
+KeyVaultLogs
+| where TimeGenerated > ago(1h)
+| where OperationName in ("wrapkey", "unwrapkey")
+| where ResultType != "Success"
+| summarize FailureCount = count() by OperationName, ResultType, CallerIpAddress
+| order by FailureCount desc
+
+
+// ----------------------------------------------------------------------------
+// Query 3: Operations per day — volume baseline
+// Useful for understanding normal access frequency before setting alert thresholds.
+// ----------------------------------------------------------------------------
+KeyVaultLogs
+| where TimeGenerated > ago(30d)
+| where OperationName in ("wrapkey", "unwrapkey")
+| summarize OperationCount = count() by bin(TimeGenerated, 1d), OperationName
+| order by TimeGenerated asc
+| render timechart
+
+
+// ----------------------------------------------------------------------------
+// Query 4: Classic AzureDiagnostics table (if resource-specific logs not enabled)
+// Same intent as Query 1 — use if KeyVaultLogs table is not available.
+// ----------------------------------------------------------------------------
+AzureDiagnostics
+| where ResourceType == "VAULTS"
+| where TimeGenerated > ago(7d)
+| where OperationName in ("VaultWrapKey", "VaultUnwrapKey")
+| project
+    TimeGenerated,
+    OperationName,
+    ResultType         = resultType_s,
+    CallerIpAddress    = CallerIPAddress,
+    AppId              = identity_claim_appid_g
+| order by TimeGenerated desc
