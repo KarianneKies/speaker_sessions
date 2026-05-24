@@ -19,6 +19,7 @@
 |---|---|---|---|
 | 01 | [Power BI Dependency Reporting](01_PowerBI_Dependency_Reporting/) | Make Data Smart Bergen, Norway  · Oct 2025<br>Data Saturday Denmark #74 · Jan 2026<br>Data Saturday Austria #78 · Jan 2026 | Notebook · Reports |
 | 02 | [Customer Managed Keys in Microsoft Fabric](02_CMK_Microsoft_Fabric/) | Data Saturday Rheinland 2026 · Jul 2026<br>Data Saturday Oslo 2026 · Aug 2026 | Scripts · KQL |
+| 03 | [Crawl Before You Medallion: Getting Your First Fabric Platform to Production](03_Crawl_Before_You_Medallion/) | TBC | Outline · Frameworks |
 
 ---
 
@@ -26,5 +27,7 @@
 
 Each session folder contains:
 - `README.md` — session overview, prerequisites, and setup guide
-- `notebook/` — Fabric or Jupyter notebooks used in the demo
-- `reports/` — Power BI report (`.pbix`) and semantic model files
+- `notebook/` — Fabric or Jupyter notebooks used in the demo (code-based sessions)
+- `reports/` — Power BI report (`.pbix`) and semantic model files (code-based sessions)
+- `outline/` — session outline and speaker notes (architecture/strategy sessions)
+- `frameworks/` — decision frameworks and reference materials (architecture/strategy sessions)
