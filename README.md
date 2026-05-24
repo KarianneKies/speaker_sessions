@@ -18,6 +18,7 @@
 | # | Session | Events | Materials |
 |---|---|---|---|
 | 01 | [Power BI Dependency Reporting](01_PowerBI_Dependency_Reporting/) | Make Data Smart Bergen, Norway  · Oct 2025<br>Data Saturday Denmark #74 · Jan 2026<br>Data Saturday Austria #78 · Jan 2026 | Notebook · Reports |
+| 02 | [Customer Managed Keys in Microsoft Fabric](02_CMK_Microsoft_Fabric/) | Data Saturday Rheinland 2026 · Jul 2026<br>Data Saturday Oslo 2026 · Aug 2026 | Scripts · KQL |
 
 ---
 
