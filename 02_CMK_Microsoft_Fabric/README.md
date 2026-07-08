@@ -75,10 +75,6 @@ This makes CMK available to workspace admins and registers the **Fabric Platform
 
 ### Step 2 — Create and configure Key Vault
 
-```bash
-bash scripts/01_keyvault_setup.sh
-```
-
 Creates a Key Vault with:
 - Soft delete enabled (Fabric hard prerequisite)
 - Purge protection enabled (Fabric hard prerequisite)
@@ -86,17 +82,9 @@ Creates a Key Vault with:
 
 ### Step 3 — Grant Fabric access to the vault
 
-```bash
-bash scripts/02_rbac_assignment.sh
-```
-
 Assigns the **Crypto Service Encryption User** role to the Fabric Platform CMK service principal. This role provides exactly three permissions: read key metadata, wrap key, unwrap key. Fabric cannot create, delete, or export keys.
 
 ### Step 4 — Create RSA key and configure rotation
-
-```bash
-bash scripts/03_create_rsa_key.sh
-```
 
 Creates an RSA-2048 key and sets automatic quarterly rotation. Outputs the **versionless key URI** — use this in Fabric so new key versions are detected automatically without reconfiguration.
 
@@ -107,61 +95,8 @@ Creates an RSA-2048 key and sets automatic quarterly rotation. Outputs the **ver
 Via the Fabric workspace settings UI:
 **Workspace Settings → Security → Encryption → Paste the versionless key URI**
 
-Or via PowerShell / Fabric REST API:
-
-```powershell
-.\scripts\04_workspace_cmk.ps1 `
-    -WorkspaceId "<your-workspace-guid>" `
-    -KeyVaultKeyUri "https://<vault>.vault.azure.net/keys/<key-name>"
-```
-
 > The workspace must only contain CMK-supported item types. Check the [current supported items list](https://learn.microsoft.com/fabric/security/customer-managed-keys) before activating.
 
 ### Step 6 — Audit key access
 
-Run the KQL queries in `scripts/05_audit_key_access.kql` against your Log Analytics workspace to verify the audit trail and set up access-failure alerts.
-
 ---
-
-## Repository Contents
-
-```
-02_CMK_Microsoft_Fabric/
-├── README.md
-└── scripts/
-    ├── 01_keyvault_setup.sh      Azure CLI — create Key Vault with required settings + audit logging
-    ├── 02_rbac_assignment.sh     Azure CLI — grant Fabric service principal Crypto Service Encryption User
-    ├── 03_create_rsa_key.sh      Azure CLI — create RSA key, configure auto-rotation, output versionless URI
-    ├── 04_workspace_cmk.ps1      PowerShell — enable CMK on workspace via Fabric REST API
-    └── 05_audit_key_access.kql   KQL — audit trail, failure alerts, and volume baseline queries
-```
-
----
-
-## Key Rotation in Production
-
-Use automatic rotation (script 03 configures quarterly). Because the versionless URI is used, Fabric picks up new versions on its daily check cycle — no Fabric reconfiguration required and no downtime for end users.
-
----
-
-## Key Revocation
-
-Disabling the key in Key Vault causes Fabric to lose access to workspace data within ~1 hour. The bytes remain on Microsoft infrastructure but are unreadable without the key.
-
-- **Soft delete** gives a recovery window (default 90 days) — re-enable the key to restore access
-- **After the purge protection window expires**, permanent deletion makes recovery impossible
-
-Some regulatory frameworks accept cryptographic erasure via key deletion as equivalent to data deletion. Confirm with your compliance and legal teams before using this as a deletion mechanism.
-
----
-
-## Operational Considerations
-
-Your Key Vault becomes a **critical dependency**. Plan for:
-
-| Risk | Mitigation |
-|---|---|
-| Vault unavailable | Azure Monitor alert on Key Vault availability; geo-redundant vault for production |
-| Accidental key disable | Restrict Key Vault access with Azure RBAC; require approval for destructive operations |
-| Key loss | Soft delete + purge protection always on; backup key material if using Managed HSM |
-| Alert on access failure | Use KQL Query 2 from script 05 as an Azure Monitor alert rule |
